@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3f6fb">
+  <meta name="description" content="Administer dFb Chrome App device licenses.">
+  <title>License Admin | dFb Chrome App</title>
+  <link rel="icon" href="favicon.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="portal.css">
+</head>
+<body class="is-checking-auth">
+  <section class="auth-splash" id="auth-splash" role="status" aria-live="polite" aria-label="Checking administrator session">
+    <div class="auth-splash-card">
+      <span class="auth-splash-brand" aria-hidden="true">d</span>
+      <span class="auth-splash-eyebrow">LICENSE CONTROL CENTER</span>
+      <h1>Welcome back</h1>
+      <p id="auth-splash-message">Checking your secure admin session…</p>
+      <span class="auth-splash-loader" aria-hidden="true"></span>
+      <div class="auth-splash-steps" aria-hidden="true">
+        <span class="is-current" data-auth-step="session">Session</span>
+        <i></i>
+        <span data-auth-step="access">Access</span>
+        <i></i>
+        <span data-auth-step="workspace">Workspace</span>
+      </div>
+    </div>
+  </section>
+  <section class="processing-overlay" id="processing-overlay" role="status" aria-live="polite" aria-label="Processing administrator request" hidden>
+    <div class="processing-card">
+      <span class="processing-indicator" aria-hidden="true"></span>
+      <strong>One moment</strong>
+      <p id="processing-message">Processing your request…</p>
+    </div>
+  </section>
+  <main class="portal-shell">
+    <header class="portal-header">
+      <a class="brand" href="./" aria-label="dFb Chrome App License Admin">
+        <span class="brand-mark" aria-hidden="true">d</span>
+        <span class="brand-copy"><small>LICENSE ADMIN</small><strong id="app-page-title">License Admin</strong></span>
+      </a>
+      <button class="icon-button header-refresh-button" id="refresh-admin" type="button" aria-label="Refresh workspace" title="Refresh workspace" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4.8 9a7.5 7.5 0 0 1 12.6-2L20 12M4 17v-5h5m10.2 3a7.5 7.5 0 0 1-12.6 2L4 12"/></svg></button>
+      <span class="secure-label" id="secure-label"><span aria-hidden="true"></span> Secure admin sign in</span>
+    </header>
+
+    <div class="portal-message" id="portal-message" role="status" aria-live="polite" hidden></div>
+
+    <section class="auth-screen" id="auth-screen">
+      <div class="auth-intro">
+        <span class="auth-brand-icon" aria-hidden="true">d</span>
+        <p class="eyebrow">LICENSE CONTROL CENTER</p>
+        <h1 id="portal-title">Welcome back</h1>
+        <p>Sign in to manage device licenses and renew subscriptions.</p>
+      </div>
+      <section class="access-card" id="admin-login-card" aria-labelledby="admin-login-title">
+        <div class="card-heading">
+          <span class="heading-icon admin-icon" aria-hidden="true">⌑</span>
+          <div><h2 id="admin-login-title">Admin sign in</h2><p>Use your authorized administrator account.</p></div>
+        </div>
+        <form id="admin-login-form" class="admin-login-form">
+          <label>Email
+            <input id="admin-email" type="email" autocomplete="username" placeholder="admin@example.com" required>
+          </label>
+          <label>Password
+            <input id="admin-password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+          </label>
+          <label class="remember-login-option">
+            <input id="remember-admin-login" type="checkbox" checked>
+            <span><strong>Remember me</strong><small>Keep this admin session on this device.</small></span>
+          </label>
+          <button class="primary-button login-submit" id="admin-login" type="submit">Sign in <span aria-hidden="true">→</span></button>
+        </form>
+        <p class="form-message" id="login-message" role="status" aria-live="polite">Admin access is restricted to accounts enabled in Supabase.</p>
+      </section>
+    </section>
+
+    <section class="dashboard" id="admin-dashboard" hidden>
+      </div>
+
+      <div class="pull-refresh-indicator" id="pull-refresh-indicator" aria-live="polite" aria-atomic="true" hidden>
+        <span class="pull-refresh-spinner" aria-hidden="true"></span>
+        <span id="pull-refresh-label">Pull to refresh</span>
+      </div>
+      <div class="refresh-skeleton" id="refresh-skeleton" aria-hidden="true" hidden>
+        <div class="skeleton-heading">
+          <span class="skeleton-line skeleton-title"></span>
+          <span class="skeleton-line skeleton-subtitle"></span>
+        </div>
+        <div class="skeleton-metrics">
+          <div class="skeleton-card"><span class="skeleton-line"></span><span class="skeleton-line skeleton-value"></span></div>
+          <div class="skeleton-card"><span class="skeleton-line"></span><span class="skeleton-line skeleton-value"></span></div>
+          <div class="skeleton-card"><span class="skeleton-line"></span><span class="skeleton-line skeleton-value"></span></div>
+          <div class="skeleton-card"><span class="skeleton-line"></span><span class="skeleton-line skeleton-value"></span></div>
+        </div>
+        <div class="skeleton-form">
+          <span class="skeleton-line skeleton-title"></span>
+          <span class="skeleton-field"></span>
+          <span class="skeleton-field"></span>
+          <span class="skeleton-field skeleton-field-short"></span>
+          <span class="skeleton-field skeleton-field-action"></span>
+        </div>
+        <div class="skeleton-card skeleton-chart"><span class="skeleton-line skeleton-title"></span><span class="skeleton-chart-shape"></span></div>
+        <div class="skeleton-card skeleton-record"><span class="skeleton-line skeleton-title"></span><span class="skeleton-line"></span><span class="skeleton-line skeleton-short"></span></div>
+        <div class="skeleton-card skeleton-record"><span class="skeleton-line skeleton-title"></span><span class="skeleton-line"></span><span class="skeleton-line skeleton-short"></span></div>
+      </div>
+      <nav class="admin-nav" id="admin-nav" aria-label="License administration">
+        <button class="admin-nav-item is-active" type="button" data-admin-view="home-view" aria-current="page" aria-label="Home"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Home</span></button>
+        <button class="admin-nav-item" type="button" data-admin-view="active-devices-view" aria-label="Devices"><span class="nav-icon" aria-hidden="true">▣</span><span class="nav-label">Devices</span></button>
+        <button class="admin-nav-item" type="button" data-admin-view="licenses-view" aria-label="License"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">License</span></button>
+        <button class="admin-nav-item" type="button" data-admin-view="more-view" aria-label="More options"><span class="nav-icon more-nav-icon" aria-hidden="true">•••</span><span class="nav-label">More</span></button>
+      </nav>
+
+      <section id="home-view" class="admin-view dashboard-home" aria-labelledby="home-title">
+        <div class="view-heading"><h3 id="home-title">Home dashboard</h3><p>Overview of issued licenses, activated devices, and upcoming expirations.</p></div>
+        <div class="metric-grid">
+          <article class="metric-card"><span>Total licenses</span><strong id="dashboard-license-count">0</strong><small>Issued to date</small></article>
+          <article class="metric-card"><span>Active devices</span><strong id="dashboard-device-count">0</strong><small>Currently activated</small></article>
+          <article class="metric-card metric-warning"><span>Expire in 7 days</span><strong id="dashboard-expiring-count">0</strong><small>Renewal needed</small></article>
+        </div>
+        <section class="section-card chart-card" aria-labelledby="activity-chart-title">
+          <div class="section-heading"><div class="view-heading"><h3 id="activity-chart-title">License activity</h3><p>Licenses issued over the last 7 days.</p></div><span class="chart-period">7 days</span></div>
+          <div class="chart-legend"><span><i class="legend-issued"></i>Issued licenses</span></div>
+          <div class="activity-chart" id="activity-chart" role="img" aria-label="Licenses issued over the last 7 days"></div>
+        </section>
+        <div class="section-card">
+          <div class="view-heading"><h3>Expiring in the next 7 days</h3><p>Renew a license before its expiry to avoid interruption.</p></div>
+          <div class="record-list" id="dashboard-expiring-list"></div>
+        </div>
+      </section>
+
+      <section id="active-devices-view" class="admin-view" aria-labelledby="active-devices-title" hidden>
+        <div class="view-heading"><h3 id="active-devices-title">Active devices</h3><p>Device activations currently associated with issued licenses.</p></div>
+        <div class="record-search-block">
+          <label class="record-search-label" for="active-device-search">Search active devices</label>
+          <div class="record-search-control">
+            <svg class="record-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+            <input id="active-device-search" class="record-search-input" type="search" autocomplete="off" placeholder="Device, license, key, customer">
+            <button class="record-search-clear" type="button" aria-label="Clear active device search" data-clear-search="active-device-search" hidden>×</button>
+          </div>
+          <span class="record-search-status" id="active-device-search-status" role="status" aria-live="polite"></span>
+        </div>
+        <div class="record-list" id="active-device-list"></div>
+        <div class="active-device-pagination" id="active-device-pagination" hidden>
+          <span class="active-device-page-status" id="active-device-page-status" role="status" aria-live="polite"></span>
+          <button class="active-device-load-more" id="active-device-load-more" type="button">Load more devices</button>
+        </div>
+      </section>
+      <section id="licenses-view" class="admin-view" aria-labelledby="licenses-title" hidden>
+        <div class="view-heading"><h3 id="licenses-title">Device licenses</h3><p>Manage issued licenses, device limits, expiry, and individual activations.</p></div>
+        <div class="record-search-block">
+          <label class="record-search-label" for="license-search">Search licenses</label>
+          <div class="record-search-control">
+            <svg class="record-search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 4.5 4.5"></path></svg>
+            <input id="license-search" class="record-search-input" type="search" autocomplete="off" placeholder="Customer, key, plan, status, device">
+            <button class="record-search-clear" type="button" aria-label="Clear license search" data-clear-search="license-search" hidden>×</button>
+          </div>
+          <span class="record-search-status" id="license-search-status" role="status" aria-live="polite"></span>
+        </div>
+        <div class="record-list" id="license-list"></div>
+      </section>
+      <section id="generate-view" class="admin-view" aria-labelledby="generate-title" hidden>
+        <form class="issue-card" id="manual-issue-form">
+          <div class="card-heading compact-heading">
+            <span class="heading-icon" aria-hidden="true">＋</span>
+            <div><h2 id="generate-title">Generate license key</h2><p>Create a new device license. The key is displayed once, so copy it before closing.</p></div>
+          </div>
+          <div class="field-grid issue-fields">
+            <label>Plan type
+              <select id="issue-plan-type">
+                <option value="paid">Paid</option>
+                <option value="free">Free</option>
+              </select>
+            </label>
+            <label>Device limit
+              <select id="issue-device-limit">
+                <option value="1">1 device</option>
+                <option value="3">3 devices</option>
+                <option value="5">5 devices</option>
+              </select>
+            </label>
+            <label>Expiry (optional)
+              <input id="issue-expires" type="date">
+            </label>
+          </div>
+          <div class="field-grid issue-customer-fields" aria-label="Customer information">
+            <label>Customer name (optional)
+              <input id="issue-customer-name" name="customer_name" type="text" maxlength="120" autocomplete="name" placeholder="Full name">
+            </label>
+            <label>Customer email (optional)
+              <input id="issue-customer-email" name="customer_email" type="email" maxlength="254" autocomplete="email" placeholder="name@example.com">
+            </label>
+            <label>Customer phone (optional)
+              <input id="issue-customer-phone" name="customer_phone" type="tel" maxlength="40" autocomplete="tel" placeholder="+1 555 0100">
+            </label>
+            <label>Telegram (optional)
+              <input id="issue-customer-telegram" name="customer_telegram" type="text" maxlength="64" autocomplete="off" placeholder="@username">
+            </label>
+          </div>
+          <button class="primary-button" type="submit">Generate license key <span aria-hidden="true">→</span></button>
+        </form>
+      </section>
+      <section id="renewals-view" class="admin-view" aria-labelledby="renewals-title" hidden>
+        <div class="view-heading"><h3 id="renewals-title">Renew licenses</h3><p>Review expired licenses and licenses due to expire within the next 7 days.</p></div>
+        <div class="record-list" id="renewal-list"></div>
+      </section>
+      <section id="more-view" class="admin-view more-view" aria-labelledby="more-title" hidden>
+        <div class="view-heading"><h3 id="more-title">More</h3><p>Additional license management tools.</p></div>
+        <div class="more-menu-list">
+          <button class="more-menu-item" type="button" data-route-view="generate-view">
+            <span class="more-menu-icon generate-menu-icon" aria-hidden="true">✳</span>
+            <span class="more-menu-copy"><strong>Generate license key</strong><small>Create a new customer license</small></span>
+            <span class="more-menu-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="more-menu-item" type="button" data-route-view="renewals-view">
+            <span class="more-menu-icon renew-menu-icon" aria-hidden="true">↻</span>
+            <span class="more-menu-copy"><strong>Renew licenses</strong><small>Review expired and expiring licenses</small></span>
+            <span class="more-menu-count warning-count" id="more-expiring-count" hidden>0</span>
+            <span class="more-menu-arrow" aria-hidden="true">›</span>
+          </button>
+          <button class="more-menu-item" type="button" data-route-view="account-view">
+            <span class="more-menu-icon account-menu-icon" aria-hidden="true">◉</span>
+            <span class="more-menu-copy"><strong>My Account</strong><small>Account details and session controls</small></span>
+            <span class="more-menu-arrow" aria-hidden="true">›</span>
+          </button>
+        </div>
+      </section>
+      <section id="account-view" class="admin-view account-view" aria-labelledby="account-title" hidden>
+        <div class="view-heading"><h3 id="account-title">My Account</h3><p>Administrator account and session settings.</p></div>
+        <section class="account-card">
+          <div class="account-profile">
+            <span class="account-avatar" aria-hidden="true">◉</span>
+            <span class="account-profile-copy"><strong>Administrator</strong><span id="admin-account-email"></span></span>
+            <span class="account-status">Secure</span>
+          </div>
+          <div class="account-actions">
+            <button class="account-action sign-out-account-action" id="admin-sign-out" type="button">
+              <span class="account-action-icon" aria-hidden="true">⇥</span>
+              <span><strong>Sign out</strong><small>End this administrator session</small></span>
+              <span class="account-action-arrow" aria-hidden="true">›</span>
+            </button>
+          </div>
+        </section>
+      </section>
+
+      <footer class="portal-footer">
+        <span>Admin actions are verified by the Supabase license service.</span>
+        <span>License administration is restricted to authorized administrators.</span>
+      </footer>
+    </section>
+  </main>
+
+  <dialog class="confirm-dialog" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-description">
+    <form method="dialog" class="dialog-card">
+      <span class="dialog-icon" aria-hidden="true">!</span>
+      <h2 id="confirm-title">Confirm action</h2>
+      <p id="confirm-description"></p>
+      <code id="confirm-detail"></code>
+      <div class="dialog-actions">
+        <button class="secondary-button" value="cancel">Cancel</button>
+        <button class="danger-button" id="confirm-action" value="confirm">Continue</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="key-dialog" id="issued-key-dialog" aria-labelledby="issued-key-title">
+    <div class="dialog-card key-dialog-card">
+      <span class="key-success-icon" aria-hidden="true">✓</span>
+      <p class="eyebrow">KEY SHOWN ONCE</p>
+      <h2 id="issued-key-title">License created</h2>
+      <p>Copy this key now and send it to the customer. It is not stored in the database and cannot be shown again.</p>
+      <code id="issued-key-value"></code>
+      <button class="primary-button" id="copy-issued-key" type="button">Copy license key</button>
+      <p class="form-message" id="issued-key-message" role="status" aria-live="polite"></p>
+      <button class="text-button" id="close-issued-key" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="renew-license-dialog" aria-labelledby="renew-license-title">
+    <form method="dialog" class="dialog-card renewal-dialog-card">
+      <span class="key-success-icon" aria-hidden="true">↻</span>
+      <h2 id="renew-license-title">Renew license</h2>
+      <p id="renew-license-description">Choose the renewal term. The term is added to the later of today or the current expiry date.</p>
+      <label class="renewal-term-label">Renewal term
+        <select id="renewal-term" class="compact-select">
+          <option value="30">30 days</option>
+          <option value="90">90 days</option>
+          <option value="365">1 year (365 days)</option>
+        </select>
+      </label>
+      <div class="dialog-actions">
+        <button class="secondary-button" id="cancel-renew-license" type="button">Cancel</button>
+        <button class="primary-button" id="confirm-renew-license" type="button">Renew license</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="config.js"></script>
+  <script src="portal.js"></script>
+</body>
+</html>
