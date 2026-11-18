@@ -1109,26 +1109,128 @@
       details.append(lastSeen, expiry);
 
       const accountsPanel = makeElement("div", "active-device-accounts");
-      accountsPanel.append(
-        makeElement("span", "detail-label", "SYNCED FACEBOOK ACCOUNTS"),
-      );
       const accounts = Array.isArray(device.accounts) ? device.accounts : [];
+      const accountsCopy = makeElement("div", "active-device-accounts-copy");
+      accountsCopy.append(
+        makeElement("span", "detail-label", "SYNCED FACEBOOK ACCOUNTS"),
+        makeElement(
+          "strong",
+          "active-device-accounts-count",
+          `${accounts.length} ${accounts.length === 1 ? "account" : "accounts"}`,
+        ),
+      );
+      const viewAccountsButton = makeElement("button", "active-device-accounts-trigger", "View accounts");
+      viewAccountsButton.type = "button";
+      viewAccountsButton.setAttribute("aria-haspopup", "dialog");
+      viewAccountsButton.setAttribute("aria-expanded", "false");
+      viewAccountsButton.setAttribute(
+        "aria-label",
+        `View ${accounts.length} synced accounts for device ${device.device_id}`,
+      );
+
+      const accountsDialog = makeElement("dialog", "license-details-dialog synced-accounts-dialog");
+      accountsDialog.setAttribute(
+        "aria-label",
+        `Synced Facebook accounts for device ${device.device_id}`,
+      );
+      const accountsDialogPanel = makeElement("div", "license-details-panel");
+      const accountsDialogHeader = makeElement("div", "license-actions-header");
+      const accountsDialogHeading = makeElement("div", "license-actions-heading");
+      accountsDialogHeading.append(
+        makeElement("span", "detail-label", "DEVICE ACCOUNTS"),
+        makeElement("strong", "", "Synced Facebook accounts"),
+        makeElement("code", "synced-accounts-device-id", device.device_id),
+      );
+      const closeAccountsButton = makeElement("button", "license-actions-close", "×");
+      closeAccountsButton.type = "button";
+      closeAccountsButton.setAttribute("aria-label", "Close synced accounts");
+      closeAccountsButton.addEventListener("click", () => accountsDialog.close());
+      accountsDialogHeader.append(accountsDialogHeading, closeAccountsButton);
+
+      const accountsDialogContent = makeElement(
+        "div",
+        "license-details-content synced-accounts-content",
+      );
+      accountsDialogContent.append(
+        makeElement(
+          "div",
+          "synced-accounts-count",
+          `${accounts.length} ${accounts.length === 1 ? "account" : "accounts"} synced from this device`,
+        ),
+      );
       if (accounts.length) {
-        const accountList = makeElement("div", "active-device-account-list");
-        for (const account of accounts) {
-          const row = makeElement("div", "active-device-account");
-          row.append(
-            makeElement("strong", "", account.account_id || "ID not provided"),
-            makeElement("span", "", account.email || "Email not provided"),
-          );
-          accountList.append(row);
+        const accountTableWrap = makeElement("div", "synced-accounts-table-wrap");
+        const accountTable = document.createElement("table");
+        accountTable.className = "synced-accounts-table";
+        accountTable.setAttribute(
+          "aria-label",
+          "Synced Facebook account IDs, emails, and credential configuration statuses",
+        );
+        const tableHead = document.createElement("thead");
+        const tableHeadRow = document.createElement("tr");
+        for (const label of ["Account ID", "Email", "Password", "2FA"]) {
+          const headerCell = document.createElement("th");
+          headerCell.scope = "col";
+          headerCell.textContent = label;
+          tableHeadRow.append(headerCell);
         }
-        accountsPanel.append(accountList);
+        tableHead.append(tableHeadRow);
+        const tableBody = document.createElement("tbody");
+        for (const account of accounts) {
+          const accountId = typeof account?.account_id === "string"
+            ? account.account_id.trim()
+            : "";
+          const email = typeof account?.email === "string" ? account.email.trim() : "";
+          const row = document.createElement("tr");
+          const accountIdCell = makeElement("td", "", accountId || "ID not provided");
+          const emailCell = makeElement("td", "", email || "Email not provided");
+          accountIdCell.dataset.label = "Account ID";
+          emailCell.dataset.label = "Email";
+          const passwordConfigured = account?.password_configured === true;
+          const passwordCell = makeElement("td");
+          passwordCell.dataset.label = "Password";
+          passwordCell.append(
+            makeElement(
+              "span",
+              `synced-account-status ${passwordConfigured ? "is-configured" : "is-unconfigured"}`,
+              passwordConfigured ? "Configured" : "Not configured",
+            ),
+          );
+          const twoFactorConfigured = account?.two_factor_configured === true;
+          const twoFactorCell = makeElement("td");
+          twoFactorCell.dataset.label = "2FA";
+          twoFactorCell.append(
+            makeElement(
+              "span",
+              `synced-account-status ${twoFactorConfigured ? "is-configured" : "is-unconfigured"}`,
+              twoFactorConfigured ? "Configured" : "Not configured",
+            ),
+          );
+          row.append(accountIdCell, emailCell, passwordCell, twoFactorCell);
+          tableBody.append(row);
+        }
+        accountTable.append(tableHead, tableBody);
+        accountTableWrap.append(accountTable);
+        accountsDialogContent.append(accountTableWrap);
       } else {
-        accountsPanel.append(
-          makeElement("span", "active-device-no-accounts", "No account details synced."),
+        accountsDialogContent.append(
+          makeElement("p", "active-device-no-accounts", "No account details have synced from this device."),
         );
       }
+      accountsDialogPanel.append(accountsDialogHeader, accountsDialogContent);
+      accountsDialog.append(accountsDialogPanel);
+      viewAccountsButton.addEventListener("click", () => {
+        accountsDialog.showModal();
+        viewAccountsButton.setAttribute("aria-expanded", "true");
+      });
+      accountsDialog.addEventListener("close", () => {
+        viewAccountsButton.setAttribute("aria-expanded", "false");
+        if (viewAccountsButton.isConnected) viewAccountsButton.focus();
+      });
+      accountsDialog.addEventListener("click", (event) => {
+        if (event.target === accountsDialog) accountsDialog.close();
+      });
+      accountsPanel.append(accountsCopy, viewAccountsButton);
 
       const menuContainer = makeElement("div", "active-device-menu-container");
       const menuTrigger = makeElement("button", "active-device-menu-trigger", "⋯");
@@ -1187,7 +1289,7 @@
       menu.append(viewLicenseButton, renewButton, separator, revokeButton);
       menuContainer.append(menuTrigger, menu);
       top.append(menuContainer);
-      card.append(top, idPanel, details, accountsPanel);
+      card.append(top, idPanel, details, accountsPanel, accountsDialog);
       container.append(card);
     }
     activeDeviceRenderedCount = end;
