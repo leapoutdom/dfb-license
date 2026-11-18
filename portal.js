@@ -1020,6 +1020,9 @@
       const customerValues = getCustomerInfo(license).map(([, value]) => value);
       const searchable = [
         device.device_id,
+        ...(Array.isArray(device.accounts)
+          ? device.accounts.flatMap((account) => [account.account_id, account.email])
+          : []),
         license.id,
         license.license_key,
         license.plan_type,
@@ -1071,7 +1074,15 @@
         makeElement("span", "", customerContact
           || `${license.plan_type === "free" ? "Free" : "Paid"} · Activated ${formatDate(device.activated_at)}`),
       );
-      heading.append(deviceIcon, title, makeElement("span", "active-device-status", "Active"));
+      const online = device.online === true;
+      const presence = makeElement(
+        "span",
+        `active-device-status ${online ? "is-online" : "is-offline"}`,
+        online ? "Online" : "Offline",
+      );
+      presence.setAttribute("role", "status");
+      presence.setAttribute("aria-label", `Device ${online ? "online" : "offline"}`);
+      heading.append(deviceIcon, title, presence);
       top.append(heading);
 
       const idPanel = makeElement("div", "active-device-id-panel");
@@ -1081,17 +1092,43 @@
       idPanel.title = device.device_id;
 
       const details = makeElement("div", "active-device-details");
-      const verified = makeElement("div", "active-device-detail");
-      verified.append(
-        makeElement("span", "detail-label", "VERIFIED"),
-        makeElement("strong", "", formatDate(device.last_verified_at)),
+      const lastSeen = makeElement("div", "active-device-detail");
+      lastSeen.append(
+        makeElement("span", "detail-label", "LAST SEEN"),
+        makeElement(
+          "strong",
+          "",
+          device.last_heartbeat_at ? formatDate(device.last_heartbeat_at) : "No heartbeat",
+        ),
       );
       const expiry = makeElement("div", "active-device-detail");
       expiry.append(
         makeElement("span", "detail-label", "EXPIRES"),
         makeElement("strong", "", formatDate(license.expires_at)),
       );
-      details.append(verified, expiry);
+      details.append(lastSeen, expiry);
+
+      const accountsPanel = makeElement("div", "active-device-accounts");
+      accountsPanel.append(
+        makeElement("span", "detail-label", "SYNCED FACEBOOK ACCOUNTS"),
+      );
+      const accounts = Array.isArray(device.accounts) ? device.accounts : [];
+      if (accounts.length) {
+        const accountList = makeElement("div", "active-device-account-list");
+        for (const account of accounts) {
+          const row = makeElement("div", "active-device-account");
+          row.append(
+            makeElement("strong", "", account.account_id || "ID not provided"),
+            makeElement("span", "", account.email || "Email not provided"),
+          );
+          accountList.append(row);
+        }
+        accountsPanel.append(accountList);
+      } else {
+        accountsPanel.append(
+          makeElement("span", "active-device-no-accounts", "No account details synced."),
+        );
+      }
 
       const menuContainer = makeElement("div", "active-device-menu-container");
       const menuTrigger = makeElement("button", "active-device-menu-trigger", "⋯");
@@ -1150,7 +1187,7 @@
       menu.append(viewLicenseButton, renewButton, separator, revokeButton);
       menuContainer.append(menuTrigger, menu);
       top.append(menuContainer);
-      card.append(top, idPanel, details);
+      card.append(top, idPanel, details, accountsPanel);
       container.append(card);
     }
     activeDeviceRenderedCount = end;
@@ -1680,6 +1717,16 @@
 
   document.getElementById("admin-sign-out").addEventListener("click", () => signOut());
   document.getElementById("refresh-admin").addEventListener("click", loadAdminData);
+  window.setInterval(() => {
+    if (
+      document.hidden
+      || !document.body.classList.contains("is-admin-authenticated")
+      || document.querySelector("dialog[open]")
+    ) {
+      return;
+    }
+    void loadAdminData({ showOverlay: false });
+  }, 60_000);
   document.getElementById("active-device-load-more").addEventListener("click", appendActiveDevicePage);
   dashboard.addEventListener("touchstart", (event) => {
     if (busy || pullRefreshing || dashboard.scrollTop > 0 || event.touches.length !== 1) return;
