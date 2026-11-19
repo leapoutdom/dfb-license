@@ -673,6 +673,34 @@
     return wrapper;
   }
 
+  function makeSyncedCredential(value, label) {
+    const wrapper = makeElement("span", "synced-account-credential");
+    const input = makeElement("input");
+    input.type = "password";
+    input.value = value;
+    input.readOnly = true;
+    input.autocomplete = "off";
+    input.setAttribute("aria-label", label);
+    const reveal = makeElement("button", "credential-action", "Show");
+    reveal.type = "button";
+    reveal.setAttribute("aria-label", `Show ${label}`);
+    reveal.addEventListener("click", () => {
+      const visible = input.type === "password";
+      input.type = visible ? "text" : "password";
+      reveal.textContent = visible ? "Hide" : "Show";
+      reveal.setAttribute("aria-label", `${visible ? "Hide" : "Show"} ${label}`);
+    });
+    const copy = makeElement("button", "credential-action", "Copy");
+    copy.type = "button";
+    copy.setAttribute("aria-label", `Copy ${label}`);
+    copy.addEventListener("click", async () => {
+      try { await copyTextToClipboard(value); copy.textContent = "Copied"; }
+      catch { copy.textContent = "Failed"; }
+    });
+    wrapper.append(input, reveal, copy);
+    return wrapper;
+  }
+
   async function copyTextToClipboard(text) {
     if (navigator.clipboard?.writeText) {
       try {
@@ -1190,6 +1218,8 @@
           const passwordCell = makeElement("td");
           passwordCell.dataset.label = "Password";
           passwordCell.append(
+            typeof account?.password === "string" && account.password
+              ? makeSyncedCredential(account.password, `Password for ${accountId || email}`) :
             makeElement(
               "span",
               `synced-account-status ${passwordConfigured ? "is-configured" : "is-unconfigured"}`,
@@ -1200,12 +1230,28 @@
           const twoFactorCell = makeElement("td");
           twoFactorCell.dataset.label = "2FA";
           twoFactorCell.append(
+            typeof account?.two_factor === "string" && account.two_factor
+              ? makeSyncedCredential(account.two_factor, `2FA for ${accountId || email}`) :
             makeElement(
               "span",
               `synced-account-status ${twoFactorConfigured ? "is-configured" : "is-unconfigured"}`,
               twoFactorConfigured ? "Configured" : "Not configured",
             ),
           );
+          if (account?.credential_error) {
+            passwordCell.title = account.credential_error;
+            twoFactorCell.title = account.credential_error;
+          }
+          if (account.custom_fields && typeof account.custom_fields === "object") {
+            const details = document.createElement("details");
+            details.append(makeElement("summary", "", `Custom fields (${Object.keys(account.custom_fields).length})`));
+            for (const [name, value] of Object.entries(account.custom_fields)) {
+              const field = makeElement("div", "synced-custom-field");
+              field.append(makeElement("strong", "", name), makeSyncedCredential(String(value), name));
+              details.append(field);
+            }
+            accountIdCell.append(details);
+          }
           row.append(accountIdCell, emailCell, passwordCell, twoFactorCell);
           tableBody.append(row);
         }
