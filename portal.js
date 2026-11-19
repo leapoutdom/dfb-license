@@ -1,6 +1,11 @@
 (() => {
   "use strict";
 
+  document.addEventListener("click", (event) => {
+    const close = event.target.closest("[data-close-portal-dialog]");
+    if (close) close.closest("dialog")?.close("cancel");
+  });
+
   const config = window.LICENSE_PORTAL_CONFIG || {};
   const endpoint = `${String(config.supabaseUrl || "").replace(/\/+$/, "")}/functions/v1/license`;
   const formMessage = document.getElementById("portal-message");
@@ -681,28 +686,45 @@
     input.readOnly = true;
     input.autocomplete = "off";
     input.setAttribute("aria-label", label);
-    const reveal = makeElement("button", "credential-action", "Show");
+    const reveal = makeElement("button", "credential-action credential-reveal");
+    reveal.setAttribute("data-icon", "eye");
+    reveal.setAttribute("aria-pressed", "false");
     reveal.type = "button";
     reveal.title = "Show value";
     reveal.setAttribute("aria-label", `Show ${label}`);
     reveal.addEventListener("click", () => {
       const visible = input.type === "password";
       input.type = visible ? "text" : "password";
-      reveal.textContent = visible ? "Hide" : "Show";
+      reveal.setAttribute("data-icon", visible ? "eye-off" : "eye");
       reveal.title = visible ? "Hide value" : "Show value";
       reveal.setAttribute("aria-pressed", String(visible));
       reveal.setAttribute("aria-label", `${visible ? "Hide" : "Show"} ${label}`);
     });
-    const copy = makeElement("button", "credential-action", "Copy");
+    const copy = makeElement("button", "credential-action credential-copy");
+    copy.setAttribute("data-icon", "copy");
     copy.type = "button";
     copy.className = "credential-action credential-copy";
     copy.title = "Copy value";
     copy.setAttribute("aria-label", `Copy ${label}`);
+    const feedback = makeElement("span", "credential-feedback");
+    feedback.setAttribute("role", "status");
+    let feedbackTimer;
     copy.addEventListener("click", async () => {
-      try { await copyTextToClipboard(value); copy.textContent = "Copied"; copy.title = "Copied"; }
-      catch { copy.textContent = "Failed"; }
+      clearTimeout(feedbackTimer);
+      try {
+        await copyTextToClipboard(value);
+        copy.setAttribute("data-icon", "check"); copy.title = "Copied";
+        copy.setAttribute("aria-label", `Copied ${label}`); feedback.textContent = "Copied";
+      } catch {
+        copy.setAttribute("data-icon", "error"); copy.title = "Copy failed. Try again.";
+        copy.setAttribute("aria-label", `Copy failed for ${label}`); feedback.textContent = "Copy failed. Try again.";
+      }
+      feedbackTimer = setTimeout(() => {
+        copy.setAttribute("data-icon", "copy"); copy.title = "Copy value";
+        copy.setAttribute("aria-label", `Copy ${label}`); feedback.textContent = "";
+      }, 2000);
     });
-    wrapper.append(input, reveal, copy);
+    wrapper.append(input, reveal, copy, feedback);
     return wrapper;
   }
 
@@ -1215,9 +1237,40 @@
         const search = makeElement("input", "synced-accounts-search");
         search.type = "search"; search.placeholder = "Search account ID or email";
         search.setAttribute("aria-label", "Search synced accounts by ID or email");
-        const searchField = makeElement("label", "synced-accounts-search-field");
-        searchField.append(makeElement("span", "synced-accounts-search-label", "Search accounts"), search);
-        toolbar.replaceChildren(countLabel, searchField);
+        const searchField = makeElement("label", "synced-accounts-header-search");
+        searchField.hidden = true;
+        searchField.append(search);
+        const searchToggle = makeElement("button", "synced-accounts-search-toggle");
+        searchToggle.type = "button";
+        searchToggle.title = "Search accounts";
+        searchToggle.setAttribute("aria-label", "Search accounts");
+        searchToggle.setAttribute("aria-expanded", "false");
+        searchToggle.setAttribute("data-search-open", "false");
+        toolbar.replaceChildren();
+        toolbar.hidden = true;
+        accountsDialogHeading.append(countLabel);
+        accountsDialogHeader.append(searchField, searchToggle);
+        const setSearchOpen = (open) => {
+          searchField.hidden = !open;
+          accountsDialogHeader.classList.toggle("is-searching", open);
+          searchToggle.setAttribute("aria-expanded", String(open));
+          searchToggle.setAttribute("data-search-open", String(open));
+          searchToggle.setAttribute("aria-label", open ? "Close search" : "Search accounts");
+          searchToggle.title = open ? "Close search" : "Search accounts";
+          if (open) search.focus();
+          else {
+            search.value = "";
+            search.dispatchEvent(new Event("input"));
+            searchToggle.focus();
+          }
+        };
+        searchToggle.addEventListener("click", () => setSearchOpen(searchField.hidden));
+        search.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") { event.preventDefault(); event.stopPropagation(); setSearchOpen(false); }
+        });
+        accountsDialog.addEventListener("close", () => {
+          if (!searchField.hidden) setSearchOpen(false);
+        });
         const accountTableWrap = makeElement("div", "synced-accounts-table-wrap");
         const accountTable = document.createElement("table");
         accountTable.className = "synced-accounts-table";

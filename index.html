@@ -256,7 +256,7 @@
   <dialog class="confirm-dialog" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-description">
     <form method="dialog" class="dialog-card">
       <span class="dialog-icon" aria-hidden="true">!</span>
-      <h2 id="confirm-title">Confirm action</h2>
+      <header class="portal-dialog-titlebar"><h2 id="confirm-title">Confirm action</h2><button type="button" class="license-actions-close" data-close-portal-dialog aria-label="Close dialog">&#215;</button></header>
       <p id="confirm-description"></p>
       <code id="confirm-detail"></code>
       <div class="dialog-actions">
@@ -270,7 +270,7 @@
     <div class="dialog-card key-dialog-card">
       <span class="key-success-icon" aria-hidden="true">✓</span>
       <p class="eyebrow">KEY SHOWN ONCE</p>
-      <h2 id="issued-key-title">License created</h2>
+      <header class="portal-dialog-titlebar"><h2 id="issued-key-title">License created</h2><button type="button" class="license-actions-close" data-close-portal-dialog aria-label="Close dialog">&#215;</button></header>
       <p>Copy this key now and send it to the customer. It is not stored in the database and cannot be shown again.</p>
       <code id="issued-key-value"></code>
       <button class="primary-button" id="copy-issued-key" type="button">Copy license key</button>
@@ -282,7 +282,7 @@
   <dialog class="confirm-dialog" id="renew-license-dialog" aria-labelledby="renew-license-title">
     <form method="dialog" class="dialog-card renewal-dialog-card">
       <span class="key-success-icon" aria-hidden="true">↻</span>
-      <h2 id="renew-license-title">Renew license</h2>
+      <header class="portal-dialog-titlebar"><h2 id="renew-license-title">Renew license</h2><button type="button" class="license-actions-close" data-close-portal-dialog aria-label="Close dialog">&#215;</button></header>
       <p id="renew-license-description">Choose the renewal term. The term is added to the later of today or the current expiry date.</p>
       <label class="renewal-term-label">Renewal term
         <select id="renewal-term" class="compact-select">

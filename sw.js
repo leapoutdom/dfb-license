@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "dfb-license-admin-v9-custom-text";
+const CACHE_NAME = "dfb-license-admin-v18-compact-table";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
