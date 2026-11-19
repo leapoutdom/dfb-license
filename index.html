@@ -11,6 +11,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="stylesheet" href="portal.css">
   <link rel="stylesheet" href="mobile.css">
+  <link rel="stylesheet" href="workspace.css">
 </head>
 <body class="is-checking-auth">
   <section class="auth-splash" id="auth-splash" role="status" aria-live="polite" aria-label="Checking administrator session">
@@ -107,10 +108,10 @@
         <div class="skeleton-card skeleton-record"><span class="skeleton-line skeleton-title"></span><span class="skeleton-line"></span><span class="skeleton-line skeleton-short"></span></div>
       </div>
       <nav class="admin-nav" id="admin-nav" aria-label="License administration">
-        <button class="admin-nav-item is-active" type="button" data-admin-view="home-view" aria-current="page" aria-label="Home"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-label">Home</span></button>
-        <button class="admin-nav-item" type="button" data-admin-view="active-devices-view" aria-label="Devices"><span class="nav-icon" aria-hidden="true">▣</span><span class="nav-label">Devices</span></button>
-        <button class="admin-nav-item" type="button" data-admin-view="licenses-view" aria-label="License"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-label">License</span></button>
-        <button class="admin-nav-item" type="button" data-admin-view="more-view" aria-label="More options"><span class="nav-icon more-nav-icon" aria-hidden="true">•••</span><span class="nav-label">More</span></button>
+        <button class="admin-nav-item is-active" type="button" data-admin-view="home-view" aria-current="page" aria-label="Home"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/></svg></span><span class="nav-label">Home</span></button>
+        <button class="admin-nav-item" type="button" data-admin-view="active-devices-view" aria-label="Devices"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg></span><span class="nav-label">Devices</span></button>
+        <button class="admin-nav-item" type="button" data-admin-view="licenses-view" aria-label="License"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8m-8 4h4"/></svg></span><span class="nav-label">License</span></button>
+        <button class="admin-nav-item" type="button" data-admin-view="more-view" aria-label="More options"><span class="nav-icon more-nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></span><span class="nav-label">More</span></button>
       </nav>
 
       <section id="home-view" class="admin-view dashboard-home" aria-labelledby="home-title">

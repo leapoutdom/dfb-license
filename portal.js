@@ -832,8 +832,9 @@
     const container = document.getElementById("activity-chart");
     const svgNamespace = "http://www.w3.org/2000/svg";
     const svg = document.createElementNS(svgNamespace, "svg");
-    svg.setAttribute("viewBox", "0 0 360 170");
-    svg.setAttribute("preserveAspectRatio", "none");
+    const chartWidth = Math.max(240, container.clientWidth);
+    svg.setAttribute("viewBox", `0 0 ${chartWidth} 230`);
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
     svg.setAttribute("aria-hidden", "true");
 
     const today = new Date();
@@ -852,14 +853,14 @@
       };
     });
     const maximum = Math.max(1, ...days.map((day) => day.issued));
-    const plotTop = 12;
-    const plotBottom = 132;
+    const plotTop = 20;
+    const plotBottom = 190;
     const plotHeight = plotBottom - plotTop;
     for (let index = 0; index <= 3; index += 1) {
       const y = plotTop + (plotHeight / 3) * index;
       const line = document.createElementNS(svgNamespace, "line");
-      line.setAttribute("x1", "8");
-      line.setAttribute("x2", "354");
+      line.setAttribute("x1", "12");
+      line.setAttribute("x2", String(chartWidth - 12));
       line.setAttribute("y1", String(y));
       line.setAttribute("y2", String(y));
       line.setAttribute("stroke", "#edf0f5");
@@ -868,26 +869,43 @@
     }
 
     days.forEach((day, index) => {
-      const center = 32 + index * 49;
+      const step = (chartWidth - 24) / 7;
+      const center = 12 + step * (index + 0.5);
+      const barWidth = Math.min(32, step * 0.42);
       const height = day.issued === 0 ? 3 : Math.max(5, (day.issued / maximum) * plotHeight);
       const bar = document.createElementNS(svgNamespace, "rect");
-      bar.setAttribute("x", String(center - 6));
+      bar.setAttribute("x", String(center - barWidth / 2));
       bar.setAttribute("y", String(plotBottom - height));
-      bar.setAttribute("width", "12");
+      bar.setAttribute("width", String(barWidth));
       bar.setAttribute("height", String(height));
       bar.setAttribute("rx", "4");
       bar.setAttribute("fill", "#286fe8");
+      const tooltip = document.createElementNS(svgNamespace, "title");
+      tooltip.textContent = `${day.date.toLocaleDateString()}: ${day.issued} licenses`;
+      bar.append(tooltip);
       svg.append(bar);
       const label = document.createElementNS(svgNamespace, "text");
       label.setAttribute("x", String(center));
-      label.setAttribute("y", "154");
+      label.setAttribute("y", "216");
       label.setAttribute("text-anchor", "middle");
       label.setAttribute("fill", "#8792a2");
-      label.setAttribute("font-size", "9");
+      label.setAttribute("font-size", "11");
       label.textContent = day.date.toLocaleDateString(undefined, { weekday: "short" });
       svg.append(label);
     });
     container.replaceChildren(svg);
+  }
+
+  if (typeof ResizeObserver !== "undefined") {
+    let lastChartWidth = 0;
+    const chartObserver = new ResizeObserver(([entry]) => {
+      const width = Math.round(entry.contentRect.width);
+      if (width > 0 && width !== lastChartWidth) {
+        lastChartWidth = width;
+        renderActivityChart();
+      }
+    });
+    chartObserver.observe(document.getElementById("activity-chart"));
   }
 
   function makeRenewButton(license) {
@@ -1260,7 +1278,7 @@
             details.append(makeElement("summary", "", `Custom fields (${Object.keys(account.custom_fields).length})`));
             for (const [name, value] of Object.entries(account.custom_fields)) {
               const field = makeElement("div", "synced-custom-field");
-              field.append(makeElement("strong", "", name), makeSyncedCredential(String(value), name));
+              field.append(makeElement("strong", "", name), makeElement("span", "synced-custom-field-value", String(value)));
               details.append(field);
             }
             accountIdCell.append(details);

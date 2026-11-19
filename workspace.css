@@ -1,0 +1,67 @@
+/* Responsive workspace shell and dashboard composition. */
+.is-admin-authenticated { background: #f5f7fb; }
+.dashboard-home > .view-heading { padding: 4px 0 2px; }
+.dashboard-home > .view-heading h3 { font-size: 24px; letter-spacing: -.7px; }
+.dashboard-home > .view-heading p { font-size: 13px; line-height: 1.6; }
+.metric-card { border-color: #e5eaf2; background: #fff; box-shadow: 0 2px 5px #17243b03; }
+.metric-card strong { color: #17243b; font-variant-numeric: tabular-nums; }
+.metric-warning strong { color: #ba6414; }
+.section-card { background: #fff; border-color: #e5eaf2; box-shadow: 0 2px 5px #17243b03; }
+.section-card .view-heading h3 { font-size: 16px; letter-spacing: -.3px; }
+.section-card .view-heading p { font-size: 12px; line-height: 1.6; }
+.activity-chart svg { height: 230px; overflow: hidden; }
+.chart-card { padding: 22px; gap: 14px; }
+.chart-legend { font-size: 11px; }
+.chart-period { padding: 7px 10px; border-radius: 8px; background: #f8fafc; font-size: 11px; }
+.admin-nav-item .nav-icon svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+
+@media (min-width: 761px) {
+  .is-admin-authenticated .portal-shell { width: calc(100% - 252px); max-width: 1280px; margin-left: calc(220px + max(16px, (100vw - 220px - 1280px) / 2)); margin-right: 16px; padding: 0 20px; }
+  .is-admin-authenticated .portal-header { width: 100%; min-height: 86px; margin: 0 0 28px; padding: 20px 0; background: transparent; border-color: #e2e8f0; }
+  .is-admin-authenticated .brand-copy strong { font-size: 19px; }
+  .is-admin-authenticated .brand-copy small { font-size: 10px; }
+  .is-admin-authenticated #admin-dashboard { gap: 24px; padding: 0 0 28px; }
+  .admin-nav { inset: 24px auto 24px 20px; width: 188px; display: flex; flex-direction: column; gap: 8px; padding: 18px 12px; border-radius: 18px; background: #fff; box-shadow: 0 5px 22px #17243b04; backdrop-filter: none; }
+  .admin-nav::before { content: "WORKSPACE"; margin: 8px 12px 20px; color: #8996a9; font-size: 10px; font-weight: 700; letter-spacing: .13em; }
+  .admin-nav-item { display: flex; flex: 0 0 auto; min-height: 48px; align-items: center; justify-content: flex-start; gap: 10px; padding: 10px 12px; border-radius: 10px; font-size: 13px; text-align: left; }
+  .admin-nav-item .nav-icon { width: 26px; height: 26px; border-radius: 6px; font-size: 20px; }
+  .admin-nav-item.is-active { background: #edf4ff; color: #2464ca; }
+  .admin-nav-item.is-active .nav-icon { background: transparent; box-shadow: none; }
+  .admin-nav-item .nav-label { white-space: normal; }
+  .dashboard-home { grid-template-columns: minmax(0, 1.65fr) minmax(260px, 1fr); gap: 20px; }
+  .dashboard-home > .view-heading, .dashboard-home > .metric-grid { grid-column: 1 / -1; }
+  .dashboard-home > .metric-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .metric-card { min-height: 132px; gap: 9px; padding: 22px; border-radius: 14px; }
+  .metric-card span { font-size: 12px; }
+  .metric-card strong { font-size: 32px; letter-spacing: -1px; }
+  .metric-card small { font-size: 11px; color: #8996a9; }
+  .dashboard-home > .section-card { align-self: stretch; align-content: start; border-radius: 14px; }
+  .dashboard-home > .section-card:not(.chart-card) { padding: 22px; gap: 18px; }
+  .dashboard-home .empty-record { padding: 32px 18px; font-size: 12px; line-height: 1.6; }
+  .portal-footer { margin-top: 8px; font-size: 11px; line-height: 1.6; }
+  .view-heading h3 { font-size: 23px; }
+  .view-heading p { font-size: 13px; }
+  .issue-card { max-width: 860px; width: 100%; }
+}
+
+@media (min-width: 761px) and (max-width: 1100px) {
+  .dashboard-home { grid-template-columns: minmax(0, 1fr); }
+  .metric-card { padding: 18px; }
+}
+
+@media (max-width: 760px) {
+  .dashboard-home { gap: 16px; }
+  .dashboard-home > .view-heading h3 { font-size: 23px; }
+  .dashboard-home > .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .dashboard-home .metric-card { min-height: 112px; padding: 16px; gap: 8px; border-radius: 14px; }
+  .dashboard-home .metric-card:last-child { grid-column: 1 / -1; grid-template-columns: 1fr auto; align-items: center; min-height: 82px; }
+  .dashboard-home .metric-card:last-child strong { grid-column: 2; grid-row: 1 / 3; }
+  .dashboard-home .metric-card:last-child small { grid-column: 1; }
+  .dashboard-home .metric-card strong { font-size: 30px; }
+  .chart-card { padding: 18px 14px 10px; gap: 12px; }
+  .activity-chart svg { height: 230px; }
+  .admin-nav { max-width: 460px; margin-right: auto; margin-left: auto; }
+  .admin-nav-item:focus-visible { outline-offset: -3px; }
+  .dashboard-home > .section-card:not(.chart-card) { padding: 18px; }
+  .dashboard-home .empty-record { padding: 26px 14px; font-size: 12px; line-height: 1.6; }
+}
