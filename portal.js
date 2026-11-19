@@ -683,18 +683,23 @@
     input.setAttribute("aria-label", label);
     const reveal = makeElement("button", "credential-action", "Show");
     reveal.type = "button";
+    reveal.title = "Show value";
     reveal.setAttribute("aria-label", `Show ${label}`);
     reveal.addEventListener("click", () => {
       const visible = input.type === "password";
       input.type = visible ? "text" : "password";
       reveal.textContent = visible ? "Hide" : "Show";
+      reveal.title = visible ? "Hide value" : "Show value";
+      reveal.setAttribute("aria-pressed", String(visible));
       reveal.setAttribute("aria-label", `${visible ? "Hide" : "Show"} ${label}`);
     });
     const copy = makeElement("button", "credential-action", "Copy");
     copy.type = "button";
+    copy.className = "credential-action credential-copy";
+    copy.title = "Copy value";
     copy.setAttribute("aria-label", `Copy ${label}`);
     copy.addEventListener("click", async () => {
-      try { await copyTextToClipboard(value); copy.textContent = "Copied"; }
+      try { await copyTextToClipboard(value); copy.textContent = "Copied"; copy.title = "Copied"; }
       catch { copy.textContent = "Failed"; }
     });
     wrapper.append(input, reveal, copy);
@@ -1187,6 +1192,14 @@
         ),
       );
       if (accounts.length) {
+        const toolbar = accountsDialogContent.querySelector(".synced-accounts-count");
+        const countLabel = makeElement("span", "synced-accounts-count-label", `${accounts.length} accounts`);
+        const search = makeElement("input", "synced-accounts-search");
+        search.type = "search"; search.placeholder = "Search account ID or email";
+        search.setAttribute("aria-label", "Search synced accounts by ID or email");
+        const searchField = makeElement("label", "synced-accounts-search-field");
+        searchField.append(makeElement("span", "synced-accounts-search-label", "Search accounts"), search);
+        toolbar.replaceChildren(countLabel, searchField);
         const accountTableWrap = makeElement("div", "synced-accounts-table-wrap");
         const accountTable = document.createElement("table");
         accountTable.className = "synced-accounts-table";
@@ -1253,10 +1266,23 @@
             accountIdCell.append(details);
           }
           row.append(accountIdCell, emailCell, passwordCell, twoFactorCell);
+          row.dataset.accountSearch = `${accountId} ${email}`.toLocaleLowerCase();
           tableBody.append(row);
         }
+        const noMatches = makeElement("p", "synced-accounts-no-matches", "No matching accounts. Try another ID or email.");
+        noMatches.hidden = true;
+        search.addEventListener("input", () => {
+          const query = search.value.trim().toLocaleLowerCase();
+          let matched = 0;
+          for (const row of tableBody.children) {
+            row.hidden = !row.dataset.accountSearch.includes(query);
+            if (!row.hidden) matched++;
+          }
+          countLabel.textContent = query ? `${matched} of ${accounts.length} accounts` : `${accounts.length} accounts`;
+          noMatches.hidden = matched !== 0;
+        });
         accountTable.append(tableHead, tableBody);
-        accountTableWrap.append(accountTable);
+        accountTableWrap.append(accountTable, noMatches);
         accountsDialogContent.append(accountTableWrap);
       } else {
         accountsDialogContent.append(

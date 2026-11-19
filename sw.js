@@ -1,10 +1,11 @@
 "use strict";
 
-const CACHE_NAME = "dfb-license-admin-v3-custom-fields";
+const CACHE_NAME = "dfb-license-admin-v7-mobile-workspace";
 const STATIC_ASSETS = [
   "./",
   "./index.html",
   "./portal.css",
+  "./mobile.css",
   "./portal.js",
   "./config.js",
   "./manifest.webmanifest",
@@ -15,6 +16,7 @@ const CACHED_PATHS = new Set([
   "",
   "index.html",
   "portal.css",
+  "mobile.css",
   "portal.js",
   "config.js",
   "manifest.webmanifest",

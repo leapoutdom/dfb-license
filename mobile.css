@@ -1,0 +1,136 @@
+/* Shared phone and tablet presentation; desktop layout stays in portal.css. */
+@media (max-width: 760px) {
+  :root { --mobile-gutter: 16px; --mobile-radius: 16px; }
+  html { scroll-padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  body { min-width: 320px; -webkit-text-size-adjust: 100%; }
+  button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+  button { touch-action: manipulation; }
+  button:focus-visible, a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  input, select, textarea { max-width: 100%; font-size: 16px; }
+  .portal-shell, .is-admin-authenticated .portal-shell { width: 100%; padding-right: var(--mobile-gutter); padding-left: var(--mobile-gutter); }
+  .is-admin-authenticated .portal-header { width: calc(100% + 32px); margin: 0 -16px 16px; padding: max(12px, env(safe-area-inset-top)) 16px 12px; background: #f7f9fc; }
+  .is-admin-authenticated .brand-copy strong { font-size: 17px; }
+  .is-admin-authenticated .brand-copy small { font-size: 9px; }
+  .is-admin-authenticated #admin-dashboard { gap: 18px; padding-bottom: calc(106px + env(safe-area-inset-bottom)); scroll-padding-top: 12px; }
+  .admin-view, .section-card, .record-list, .record-card, .issue-card { min-width: 0; }
+  .admin-view { gap: 16px; }
+  .view-heading h3 { font-size: 22px; line-height: 1.25; letter-spacing: -.5px; }
+  .view-heading p { margin-top: 7px; font-size: 13px; line-height: 1.6; }
+  .section-heading { flex-wrap: wrap; align-items: center; gap: 12px; }
+  .section-heading > .view-heading { flex: 1 1 180px; }
+  .admin-nav { inset: auto 12px max(10px, env(safe-area-inset-bottom)); gap: 4px; padding: 6px; border-radius: 22px; background: #ffffffed; }
+  .admin-nav-item { min-height: 60px; gap: 4px; font-size: 10px; border-radius: 16px; }
+  .admin-nav-item .nav-icon { width: 46px; height: 30px; font-size: 21px; }
+  .metric-grid { gap: 10px; }
+  .metric-card { min-height: 116px; gap: 8px; padding: 16px; border-radius: var(--mobile-radius); background: #fff; }
+  .metric-card span { font-size: 12px; line-height: 1.4; }
+  .metric-card strong { font-size: 30px; }
+  .metric-card small { font-size: 11px; line-height: 1.4; }
+  .section-card, .issue-card, .account-card { padding: 18px; border-radius: var(--mobile-radius); background: #fff; box-shadow: 0 2px 8px #182b4605; }
+  .chart-card { overflow: hidden; }
+  .chart-legend { flex-wrap: wrap; gap: 10px; font-size: 11px; }
+  .record-list { gap: 12px; }
+  .record-search-block { margin: 0; gap: 7px; }
+  .record-search-label { font-size: 12px; font-weight: 600; }
+  .record-search-control { min-height: 48px; padding-left: 13px; border-radius: 12px; }
+  .record-search-input { min-width: 0; min-height: 46px; font-size: 16px; }
+  .record-search-clear { width: 44px; height: 44px; flex-basis: 44px; }
+  .record-search-status { font-size: 12px; line-height: 1.5; }
+  .license-card, .active-device-card, .license-record, .renewal-record { padding: 16px; border-radius: var(--mobile-radius); }
+  .record-heading { flex-wrap: wrap; gap: 9px; }
+  .record-heading strong { font-size: 15px; overflow-wrap: anywhere; }
+  .record-meta, .record-notes, .record-admin-note { font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+  .active-device-title, .license-card-title-copy { min-width: 0; }
+  .active-device-title strong, .license-card-title-copy strong { font-size: 14px; }
+  .active-device-title > span, .license-card-title-copy > span { font-size: 11px; }
+  .active-device-menu-trigger, .license-menu-trigger, .icon-button { min-width: 44px; min-height: 44px; }
+  .active-device-id, .record-device-id { font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+  .active-device-accounts { flex-wrap: wrap; gap: 12px; }
+  .active-device-accounts-trigger { min-height: 44px; padding: 10px 14px; border-radius: 10px; }
+  .active-device-pagination { flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .active-device-pagination button { min-width: 44px; min-height: 44px; }
+  .field-grid, .issue-fields, .issue-customer-fields { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .field-wide { grid-column: auto; }
+  .field-grid label, .admin-login-form label, .license-setting-field { gap: 7px; font-size: 12px; line-height: 1.5; }
+  .field-grid input, .field-grid select, .field-grid textarea, .admin-login-form input, .compact-select, .compact-date, .select-control-trigger, .date-picker-trigger { min-height: 48px; border-radius: 11px; font-size: 16px; }
+  .field-grid textarea { min-height: 110px; }
+  .card-heading { align-items: flex-start; gap: 12px; }
+  .card-heading h2 { font-size: 18px; line-height: 1.35; }
+  .card-heading p { font-size: 12px; line-height: 1.6; }
+  .primary-button, .secondary-button, .danger-button, .admin-action, .license-save-button, .license-device-revoke { min-height: 46px; border-radius: 11px; font-size: 13px; }
+  .primary-button { min-height: 48px; }
+  .form-message, .portal-message { font-size: 12px; line-height: 1.6; }
+  .more-menu-item { min-height: 82px; padding: 14px; border-radius: var(--mobile-radius); }
+  .more-menu-copy strong, .account-action strong { font-size: 14px; }
+  .more-menu-copy small, .account-action small { font-size: 12px; line-height: 1.5; white-space: normal; }
+  .account-profile { flex-wrap: wrap; gap: 12px; }
+  .account-profile-copy { flex-basis: 130px; }
+  .account-action { min-height: 72px; padding: 12px; border-radius: 12px; }
+  .portal-footer { flex-direction: column; gap: 7px; font-size: 10px; line-height: 1.6; padding: 16px 2px 6px; }
+
+  /* All confirmation, key, settings, overview, and device dialogs. */
+  dialog { max-width: calc(100vw - 24px); }
+  .confirm-dialog, .key-dialog { width: min(440px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); overflow-y: auto; border-radius: 20px; }
+  .dialog-card { gap: 14px; padding: 24px 20px max(20px, env(safe-area-inset-bottom)); }
+  .dialog-card h2 { font-size: 20px; line-height: 1.3; }
+  .dialog-card p { font-size: 13px; line-height: 1.65; }
+  .dialog-card code { width: 100%; font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
+  .dialog-actions { gap: 10px; }
+  .dialog-actions > button, .key-dialog .text-button { min-height: 48px; font-size: 14px; }
+  .license-details-dialog { inset: 0; transform: none; width: calc(100vw - 20px); height: min(820px, calc(100dvh - 32px)); max-height: calc(100dvh - 32px); margin: auto; overflow: hidden; border-radius: 20px; }
+  .license-details-dialog .license-details-panel { min-height: 0; gap: 14px; padding: 18px; border-radius: 20px; }
+  .license-details-content { min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-bottom: max(8px, env(safe-area-inset-bottom)); }
+  .license-actions-header { flex: 0 0 auto; gap: 10px; }
+  .license-actions-heading strong { font-size: 18px; white-space: normal; line-height: 1.4; }
+  .license-actions-close { flex: 0 0 44px; width: 44px; height: 44px; }
+  .license-action-item { min-height: 48px; font-size: 14px; border-radius: 11px; }
+  .license-settings-dialog { height: fit-content; }
+  .license-settings-dialog .license-details-panel { max-height: calc(100dvh - 32px); }
+  .license-settings-dialog .license-details-content { max-height: none; }
+  .license-settings, .license-record .license-settings { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .license-setting-field:last-child { grid-column: auto; }
+  .license-summary-grid, .license-overview-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .license-summary-item { padding: 10px; }
+  .license-summary-item:last-child { grid-column: 1 / -1; }
+  .license-key-row { flex-wrap: wrap; }
+  .license-key-row .key-copy-button { flex: 1 1 100%; min-height: 44px; }
+  .license-key-value { min-height: 44px; font-size: 12px; }
+  .license-customer-field { grid-template-columns: minmax(0, 1fr); gap: 5px; padding: 12px 0; }
+  .license-customer-field strong { font-size: 14px; overflow-wrap: anywhere; }
+  .select-control-menu { max-height: min(280px, 40dvh); overscroll-behavior: contain; }
+  .select-control-option { min-height: 46px; font-size: 14px; }
+  .date-picker-popup { max-width: calc(100vw - 64px); }
+  .date-picker-day { height: 40px; font-size: 13px; }
+  .date-picker-month-button { width: 40px; height: 40px; }
+
+  /* Preserve search and header outside the account list's scroll region. */
+  .synced-accounts-dialog .license-details-panel { padding: 0; gap: 0; }
+  .synced-accounts-dialog .synced-accounts-content { display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden; padding: 14px 12px max(12px, env(safe-area-inset-bottom)); }
+  .synced-accounts-dialog .license-actions-header { padding: 18px 16px 14px; }
+  .synced-accounts-dialog .synced-accounts-device-id { white-space: normal; overflow-wrap: anywhere; }
+  .synced-accounts-search-field { width: 100%; }
+  .synced-accounts-table-wrap { min-height: 0; overflow: auto; }
+  .synced-custom-field { min-width: 0; }
+  .auth-screen { width: 100%; max-width: 440px; margin: 0 auto; padding: 24px 0; }
+  .welcome-panel { margin: 20px 0 24px; }
+  .welcome-panel h1 { font-size: 30px; }
+  .welcome-panel > p:last-child { font-size: 14px; }
+  .access-card { padding: 22px 18px; border-radius: 20px; }
+  .auth-splash-card, .processing-card { max-width: 100%; }
+}
+
+@media (max-width: 360px) {
+  :root { --mobile-gutter: 12px; }
+  .is-admin-authenticated .portal-header { width: calc(100% + 24px); margin-right: -12px; margin-left: -12px; padding-right: 12px; padding-left: 12px; }
+  .metric-card { padding: 13px; }
+  .metric-card strong { font-size: 26px; }
+  .section-card, .issue-card, .account-card { padding: 14px; }
+  .dialog-actions { grid-template-columns: minmax(0, 1fr); }
+  .renewal-dialog-card .dialog-actions { grid-template-columns: minmax(0, 1fr); }
+  .license-overview-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-nav-item, .admin-nav-item .nav-icon, .primary-button, .license-actions-close { transition: none; }
+  .admin-nav-item:active::before { animation: none; }
+}
